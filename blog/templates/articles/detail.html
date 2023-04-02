@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Article - {{ article.title }}
+{% endblock %}
+
+
+{% block body %}
+    <h1>{{ article.title }}</h1>
+    <p>
+        {{ article.text }}
+    </p>
+    <div>by <a href="{{ url_for('user.user_list')}}{{ article.author }}"> {{ users[article.author] }} </a></div>
+{% endblock body %}
