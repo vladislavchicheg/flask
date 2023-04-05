@@ -10,5 +10,5 @@
     <p>
         {{ article.text }}
     </p>
-    <div>by <a href="{{ url_for('user.user_list')}}{{ article.author }}"> {{ users[article.author] }} </a></div>
+    <div>by <a href="{{ url_for('user_app.user_list')}}{{ article.author }}"> {{ users[article.author] }} </a></div>
 {% endblock body %}
