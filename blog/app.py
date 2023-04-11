@@ -10,7 +10,7 @@ from blog.views.auth import auth
 from blog.views.index import index
 from blog.views.users import users_app
 
-from .extension import db, login_manager, migrate
+from .extension import csrf, db, login_manager, migrate
 from .models import User
 
 
@@ -25,16 +25,16 @@ def create_app() -> Flask:
     return app
 
 
-@login_manager.user_loader
-def load_user(user):
-    return User.get(user)
-
-
 def registr_extensions(app):
     db.init_app(app)
     migrate.init_app(app, db)
+    csrf.init_app(app)
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
 
 
 def register_blueprints(app: Flask):
