@@ -1,0 +1,7 @@
+Flask
+Werkzeug
+click==8.0
+Flask-SQLAlchemy==3.0.3
+Flask-Login
+psycopg2
+MarkupSafe
