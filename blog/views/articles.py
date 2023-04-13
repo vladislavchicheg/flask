@@ -1,48 +1,47 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, current_app, redirect, render_template, request, url_for
+from flask_login import current_user, login_required
+from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import NotFound
 
+from blog.extension import db
+from blog.forms.article import CreateArticleForm
+from blog.models import Article, Author
+
 article = Blueprint("article", __name__, url_prefix="/articles", static_folder="../static")
-USERS = {
-    1: "Petya",
-    2: "Kolya",
-    3: "Olya",
-    4: "Volodya",
-}
-ARTICLES = {
-    1: {
-        "title": "Новая парадигма реальности: чистосердечное признание облегчает душу!",
-        "text": "Но дальнейшее развитие различных форм деятельности позволяет выполнить важные задания по разработке "
-        + "позиций, занимаемых участниками в отношении поставленных задач. Кстати, интерактивные прототипы "
-        + "представляют собой не что иное, как квинтэссенцию победы маркетинга над разумом и должны описаны"
-        + " максимально подробно. Для современного мира дальнейшее развитие различных форм деятельности "
-        + "предоставляет широкие возможности для экспериментов, поражающих по своей масштабности рандиозности.",
-        "author": 1,
-    },
-    2: {
-        "title": "Допустим, средства индивидуальной защиты оказались бесполезны!",
-        "text:": "Таким образом, семантический разбор внешних противодействий прекрасно подходит для реализации "
-        + "прогресса профессионального сообщества.",
-        "author": 2,
-    },
-    3: {
-        "title": "Нет звука приятнее, чем грохот грома грядущих изменений",
-        "text": "В своём стремлении улучшить пользовательский опыт мы упускаем, что ключевые особенности "
-        + "структуры проекта освещают чрезвычайно интересные особенности картины в целом, однако конкретные "
-        + "выводы, разумеется, объявлены нарушающими общечеловеческие нормы этики и морали.",
-        "author": 3,
-    },
-}
 
 
 @article.route("/")
 def article_list():
-    return render_template("articles/list.html", articles=ARTICLES, active="articles")
+    articles = Article.query.all()
+    return render_template("articles/list.html", articles=articles, active="articles")
 
 
 @article.route("/<int:pk>")
 def get_article(pk: int):
-    try:
-        article = ARTICLES[pk]
-    except KeyError:
-        raise NotFound(f"article id {pk} not found")
-    return render_template("articles/detail.html", article=article, users=USERS, active="articles")
+    _article = Article.query.filter_by(id=pk).one_or_none()
+    if article is None:
+        raise NotFound
+    return render_template("articles/detail.html", article=_article, active="articles")
+
+
+@article.route("/create/", methods=["GET", "POST"])
+@login_required
+def create_article():
+    error = None
+    form = CreateArticleForm(request.form)
+
+    if form.validate_on_submit():
+        _article = Article(title=form.title.data.strip(), body=form.body.data)
+        if current_user.author:
+            # use existing author if present
+            _article.author_id = current_user.id
+        else:
+            # otherwise create author record
+            author = Author(user_id=current_user.id)
+            _article.author_id = current_user.id
+            db.session.add(author)
+            db.session.flush()
+        db.session.add(_article)
+        db.session.commit()
+        return redirect(url_for("article.get_article", pk=_article.id))
+    return render_template("articles/create.html", form=form, error=error)

@@ -10,6 +10,9 @@
           <a class="nav-link {% if active=='users' %}active{%endif %}" aria-current="page" href="{{ url_for('users_app.users_list')}}">Users</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link {% if active=='authors' %}active{%endif %}" aria-current="page" href="{{ url_for('authors_app.authors_list')}}">Authors</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link {% if active=='articles' %}active{%endif %}" href="{{ url_for('article.article_list')}}">Articles</a>
         </li>
       <li class="nav-item">

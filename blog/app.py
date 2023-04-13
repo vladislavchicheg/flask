@@ -7,11 +7,12 @@ from flask_migrate import Migrate
 from blog import commands
 from blog.views.articles import article
 from blog.views.auth import auth
+from blog.views.authors import authors_app
 from blog.views.index import index
 from blog.views.users import users_app
 
 from .extension import csrf, db, login_manager, migrate
-from .models import User
+from .models import Author, User
 
 
 def create_app() -> Flask:
@@ -42,6 +43,7 @@ def register_blueprints(app: Flask):
     app.register_blueprint(users_app, url_prefix="/users")
     app.register_blueprint(article, url_prefix="/articles")
     app.register_blueprint(auth, url_prefix="/auth")
+    app.register_blueprint(authors_app, url_prefix="/authors")
 
 
 def register_commands(app: Flask):
