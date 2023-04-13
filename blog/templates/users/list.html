@@ -12,7 +12,7 @@
                 <li>
                     <a href="{{ url_for('users_app.user_details', user_id=user.id) }}">
 
-                        {{ user.username }}
+                        {{ user.email }}
 
                         {% if user.is_staff %}
                             <span class="badge bg-secondary">staff</span>
