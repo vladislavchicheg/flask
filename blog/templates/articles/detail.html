@@ -11,6 +11,14 @@
     <div class="row">
         <div class="col-md-12">{{ article.body }}</div>
     </div>
+    {% if article.tags %}
+
+        <div class="col-6">
+            {% for tag in article.tags %}
+                <span class="badge bg-primary">{{ tag.name }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
 
     <div class="row">
         <div class="col-6">
