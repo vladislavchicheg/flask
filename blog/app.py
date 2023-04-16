@@ -2,16 +2,16 @@ import os
 
 from flask import Flask
 from flask_login import LoginManager, login_manager
-from flask_migrate import Migrate
 
 from blog import commands
-from blog.views.articles import article
+from blog.views.admin import admin_app
+from blog.views.articles import article_app
 from blog.views.auth import auth
 from blog.views.authors import authors_app
 from blog.views.index import index
 from blog.views.users import users_app
 
-from .extension import csrf, db, login_manager, migrate
+from .extension import admin, csrf, db, login_manager, migrate
 from .models import Author, User
 
 
@@ -32,6 +32,7 @@ def registr_extensions(app):
     csrf.init_app(app)
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
+    admin.init_app(app)
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -39,11 +40,16 @@ def registr_extensions(app):
 
 
 def register_blueprints(app: Flask):
+
+    from blog import admin
+
     app.register_blueprint(index, url_prefix="/")
     app.register_blueprint(users_app, url_prefix="/users")
-    app.register_blueprint(article, url_prefix="/articles")
+    app.register_blueprint(article_app, url_prefix="/articles")
     app.register_blueprint(auth, url_prefix="/auth")
     app.register_blueprint(authors_app, url_prefix="/authors")
+    app.register_blueprint(admin_app, url_prefix="/admin")
+    admin.register_views()
 
 
 def register_commands(app: Flask):

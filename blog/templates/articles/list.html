@@ -15,7 +15,7 @@
                         <h5 class="card-title">{{ article.title }}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{ article.author.user.first_name }} {{ article.author.user.last_name }}</h6>
                         <p class="card-text">{{ article.text | truncate(50) }}</p>
-                        <a href="{{ url_for('article.get_article', pk=article.id) }}"
+                        <a href="{{ url_for('article_app.get_article', pk=article.id) }}"
                            class="card-link">Read</a>
                     </div>
                     <div class="card-footer">

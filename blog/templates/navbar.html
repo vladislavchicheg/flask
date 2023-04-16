@@ -13,7 +13,7 @@
           <a class="nav-link {% if active=='authors' %}active{%endif %}" aria-current="page" href="{{ url_for('authors_app.authors_list')}}">Authors</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if active=='articles' %}active{%endif %}" href="{{ url_for('article.article_list')}}">Articles</a>
+          <a class="nav-link {% if active=='articles' %}active{%endif %}" href="{{ url_for('article_app.article_list')}}">Articles</a>
         </li>
       <li class="nav-item">
         {% if current_user.is_authenticated %}
