@@ -8,24 +8,24 @@ from blog.extension import db
 from blog.forms.article import CreateArticleForm
 from blog.models import Article, Author, Tag
 
-article = Blueprint("article", __name__, url_prefix="/articles", static_folder="../static")
+article_app = Blueprint("article_app", __name__, url_prefix="/articles", static_folder="../static")
 
 
-@article.route("/")
+@article_app.route("/")
 def article_list():
     articles = Article.query.all()
     return render_template("articles/list.html", articles=articles, active="articles")
 
 
-@article.route("/<int:pk>")
+@article_app.route("/<int:pk>")
 def get_article(pk: int):
     _article = Article.query.filter_by(id=pk).options(joinedload(Article.tags)).one_or_none()
-    if article is None:
+    if _article is None:
         raise NotFound
     return render_template("articles/detail.html", article=_article, active="articles")
 
 
-@article.route("/create/", methods=["GET", "POST"])
+@article_app.route("/create/", methods=["GET", "POST"])
 @login_required
 def create_article():
     error = None
@@ -49,5 +49,5 @@ def create_article():
                 _article.tags.append(tag)
         db.session.add(_article)
         db.session.commit()
-        return redirect(url_for("article.get_article", pk=_article.id))
+        return redirect(url_for("article_app.get_article", pk=_article.id))
     return render_template("articles/create.html", form=form, error=error)
