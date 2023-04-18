@@ -1,10 +1,28 @@
+from combojsonapi.spec import ApiSpecPlugin
 from flask_admin import Admin
+from flask_combo_jsonapi import Api
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 
 from blog.views.admin import CustomAdminIndexView
+
+
+def create_api_spec_plugin(app):
+    api_spec_plugin = ApiSpecPlugin(
+        app=app,
+        # Declaring tags list with their descriptions,
+        # so API gets organized into groups. it's optional.
+        tags={
+            "Tag": "Tag API",
+            "User": "User API",
+            "Author": "Author API",
+            "Article": "Article API",
+        },
+    )
+    return api_spec_plugin
+
 
 db = SQLAlchemy()
 login_manager = LoginManager()

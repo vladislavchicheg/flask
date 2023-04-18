@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_combo_jsonapi import Api
 from flask_login import LoginManager, login_manager
 
 from blog import commands
@@ -11,7 +12,10 @@ from blog.views.authors import authors_app
 from blog.views.index import index
 from blog.views.users import users_app
 
-from .extension import admin, csrf, db, login_manager, migrate
+from .api.article import ArticleDetail, ArticleList
+from .api.author import AuthorDetail, AuthorList
+from .api.user import UserDetail, UserList
+from .extension import admin, create_api_spec_plugin, csrf, db, login_manager, migrate
 from .models import Author, User
 
 
@@ -33,14 +37,28 @@ def registr_extensions(app):
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
     admin.init_app(app)
+    register_api(app)
 
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
 
 
-def register_blueprints(app: Flask):
+def register_api(app: Flask):
+    from blog.api.tag import TagDetail, TagList
 
+    api = Api(app=app, plugins=[create_api_spec_plugin(app)])
+    api.route(TagList, "tag_list", "/api/tags/")
+    api.route(TagDetail, "tag_detail", "/api/tags/<int:id>")
+    api.route(UserList, "user_list", "/api/users/", tag="User")
+    api.route(UserDetail, "user_detail", "/api/users/<int:id>/", tag="User")
+    api.route(AuthorList, "author_list", "/api/authors/", tag="Author")
+    api.route(AuthorDetail, "author_detail", "/api/authors/<int:id>/", tag="Author")
+    api.route(ArticleList, "article_list", "/api/articles/", tag="Article")
+    api.route(ArticleDetail, "article_detail", "/api/articles/<int:id>/", tag="Article")
+
+
+def register_blueprints(app: Flask):
     from blog import admin
 
     app.register_blueprint(index, url_prefix="/")
