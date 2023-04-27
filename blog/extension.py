@@ -1,3 +1,5 @@
+from combojsonapi.event import EventPlugin
+from combojsonapi.permission import PermissionPlugin
 from combojsonapi.spec import ApiSpecPlugin
 from flask_admin import Admin
 from flask_combo_jsonapi import Api
@@ -22,6 +24,16 @@ def create_api_spec_plugin(app):
         },
     )
     return api_spec_plugin
+
+
+def create_api_event_plugin(app):
+    api_event_plugin = EventPlugin()
+
+    return api_event_plugin
+
+
+def create_permission_plugin():
+    return PermissionPlugin()
 
 
 db = SQLAlchemy()
