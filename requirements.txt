@@ -15,4 +15,6 @@ Flask_COMBO_JSONAPI==1.1.0
 ComboJSONAPI==1.0.5
 apispec==2.0.2
 PyYAML==5.3.1
+requests
+gunicorn
 
