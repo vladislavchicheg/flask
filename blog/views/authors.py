@@ -12,6 +12,6 @@ def authors_list():
     article_count = {}
     for author in authors:
         article_count[author.id] = requests.get(
-            f"http://127.0.0.1:5000/api/authors/{author.id}/event_get_articles_count/"
+            f"https://flask-blog-rqp4.onrender.com/api/authors/{author.id}/event_get_articles_count/"
         ).json()
     return render_template("authors/list.html", article_count=article_count, authors=authors)

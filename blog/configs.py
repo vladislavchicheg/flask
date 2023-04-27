@@ -11,11 +11,17 @@ class BaseConfig(object):
     OPENAPI_URL_PREFIX = "/api/swagger"
     OPENAPI_SWAGGER_UI_PATH = "/"
     OPENAPI_SWAGGER_UI_VERSION = "3.22.0"
+    API_URL = "https://127.0.0.1:8000"
 
 
 class DevConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
+
+
+class ProdConfig(BaseConfig):
+    DEBUG = False
+    API_URL = "https://flask-blog-rqp4.onrender.com"
 
 
 class TestingConfig(BaseConfig):

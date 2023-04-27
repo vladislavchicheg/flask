@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 from werkzeug.exceptions import NotFound
 
+from blog.configs import BaseConfig
 from blog.extension import db
 from blog.forms.article import CreateArticleForm
 from blog.models import Article, Author, Tag
@@ -17,7 +18,7 @@ article_app = Blueprint("article_app", __name__, url_prefix="/articles", static_
 @article_app.route("/")
 def article_list():
     articles = Article.query.all()
-    count_articles: Dict = requests.get("http://127.0.0.1:5000/api/articles/event_get_count/").json()
+    count_articles: Dict = requests.get("https://flask-blog-rqp4.onrender.com/api/articles/event_get_count/").json()
     return render_template(
         "articles/list.html", articles=articles, count_articles=count_articles["count"], active="articles"
     )
