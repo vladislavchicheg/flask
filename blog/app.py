@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Blueprint, Flask
 from flask_combo_jsonapi import Api
 from flask_login import LoginManager, login_manager
 
@@ -15,7 +15,16 @@ from blog.views.users import users_app
 from .api.article import ArticleDetail, ArticleList
 from .api.author import AuthorDetail, AuthorList
 from .api.user import UserDetail, UserList
-from .extension import admin, create_api_spec_plugin, csrf, db, login_manager, migrate
+from .extension import (
+    admin,
+    create_api_event_plugin,
+    create_api_spec_plugin,
+    create_permission_plugin,
+    csrf,
+    db,
+    login_manager,
+    migrate,
+)
 from .models import Author, User
 
 
@@ -45,9 +54,13 @@ def registr_extensions(app):
 
 
 def register_api(app: Flask):
+
     from blog.api.tag import TagDetail, TagList
 
-    api = Api(app=app, plugins=[create_api_spec_plugin(app)])
+    api_blueprint = Blueprint("api", __name__)
+    csrf.exempt(api_blueprint)
+    api = Api(app=app, plugins=[create_api_event_plugin(app), create_api_spec_plugin(app), create_permission_plugin()])
+
     api.route(TagList, "tag_list", "/api/tags/")
     api.route(TagDetail, "tag_detail", "/api/tags/<int:id>")
     api.route(UserList, "user_list", "/api/users/", tag="User")

@@ -10,7 +10,7 @@
                 {% for author in authors %}
                     <li>
                         <a href="{{ url_for('users_app.user_details', user_id=author.user.id) }}">
-                            {{ author.id }} ({{ author.user.email }})
+                            {{ author.id }} ({{ author.user.email }}) articles: {{ article_count[author.id].count }}
                         </a>
                     </li>
                 {% endfor %}
